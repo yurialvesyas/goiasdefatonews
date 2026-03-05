@@ -133,3 +133,27 @@
     }
     
     }
+
+    header{
+        background:#0b8a2a;
+        padding:10px 0;
+        text-align:center;
+        }
+        
+        .topo{
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        justify-content:center;
+        height:auto;
+        }
+        
+        .logo{
+        line-height:0;
+        }
+        
+        .logo-img{
+        width:400px;
+        display:block;
+        margin:auto;
+        }
