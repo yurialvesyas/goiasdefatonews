@@ -1,0 +1,9 @@
+<h1><%= noticia.titulo %></h1>
+
+<% if(noticia.imagem){ %>
+<img src="/img/<%= noticia.imagem %>" width="400">
+<% } %>
+
+<p><%= noticia.conteudo %></p>
+
+<p>Visualizações: <%= noticia.visualizacoes %></p>

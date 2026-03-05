@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<title>Goiás de Fato News</title>
+
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+<body>
+
+<header>
+
+<div class="topo">
+
+<div class="logo">
+GOIÁS DE FATO NEWS
+</div>
+
+<div class="busca">
+
+<form action="/buscar">
+<input type="text" placeholder="Buscar notícia...">
+</form>
+
+</div>
+
+</div>
+
+</header>
+
+<nav>
+
+<ul>
+
+<li><a href="/">Início</a></li>
+<li><a href="#">Política</a></li>
+<li><a href="#">Goiás</a></li>
+<li><a href="#">Brasil</a></li>
+<li><a href="#">Economia</a></li>
+<li><a href="#">Opinião</a></li>
+
+</ul>
+
+</nav>
+
+<div class="container">
+
+<section class="grid-noticias">
+
+<% noticias.forEach(function(n){ %>
+
+<div class="card">
+
+<h3>
+<a href="/noticia/<%= n.id %>">
+<%= n.titulo %>
+</a>
+</h3>
+
+<p>
+<%= n.conteudo.substring(0,120) %>...
+</p>
+
+</div>
+
+<% }) %>
+
+</section>
+
+</div>
+
+<footer>
+
+<p>© 2026 Goiás de Fato News</p>
+
+</footer>
+
+</body>
+
+</html>
