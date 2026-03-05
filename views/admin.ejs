@@ -1,11 +1,65 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<title>Painel Admin</title>
+
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+<body>
+
+<h1>Painel Administrativo</h1>
+
+<a href="/logout">Sair</a>
+
+<hr>
+
+<h2>Publicar notícia</h2>
+
 <form action="/admin/publicar" method="POST" enctype="multipart/form-data">
 
-    <input type="text" name="titulo" placeholder="Título">
-    
-    <textarea name="conteudo" placeholder="Conteúdo"></textarea>
-    
-    <input type="file" name="imagem">
-    
-    <button type="submit">Publicar</button>
-    
-    </form>
+<input type="text" name="titulo" placeholder="Título da notícia" required>
+
+<br><br>
+
+<textarea name="conteudo" placeholder="Conteúdo da notícia" rows="6" required></textarea>
+
+<br><br>
+
+<input type="file" name="imagem">
+
+<br><br>
+
+<button type="submit">Publicar</button>
+
+</form>
+
+<hr>
+
+<h2>Notícias publicadas</h2>
+
+<% noticias.forEach(function(n){ %>
+
+<div style="border:1px solid #ccc;padding:10px;margin:10px 0;">
+
+<strong><%= n.titulo %></strong>
+
+<br><br>
+
+<a href="/admin/editar/<%= n.id %>">✏️ Editar</a>
+
+|
+
+<a href="/admin/excluir/<%= n.id %>" onclick="return confirm('Deseja excluir esta notícia?')">🗑️ Excluir</a>
+
+</div>
+
+<% }) %>
+
+</body>
+
+</html>
