@@ -14,7 +14,7 @@
     header{
     background:#0b8a2a;
     color:white;
-    padding:0px 0;
+    padding:20px 0 15px 0;
     text-align:center;
     }
     
@@ -25,13 +25,12 @@
     flex-direction:column;
     align-items:center;
     justify-content:center;
-    gap:10px;
     }
     
     /* LOGO */
     
     .logo-img{
-    width:480px;
+    width:420px;
     max-width:90%;
     display:block;
     margin:auto;
@@ -40,6 +39,8 @@
     /* BUSCA */
     
     .busca{
+    display:flex;
+    justify-content:center;
     margin-top:10px;
     }
     
@@ -48,7 +49,7 @@
     border:none;
     border-radius:6px;
     font-size:16px;
-    width:250px;
+    width:260px;
     }
     
     /* MENU */
@@ -123,7 +124,7 @@
     @media(max-width:900px){
     
     .logo-img{
-    width:200px;
+    width:220px;
     }
     
     nav ul{
