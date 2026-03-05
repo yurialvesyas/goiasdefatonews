@@ -150,6 +150,35 @@ db.run(
 [titulo,conteudo,imagem]
 )
 
+db.run(`
+    CREATE TABLE IF NOT EXISTS noticias (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    titulo TEXT,
+    conteudo TEXT,
+    imagem TEXT,
+    visualizacoes INTEGER DEFAULT 0
+    )
+    `)
+
+    db.run(`
+        CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario TEXT,
+        senha TEXT
+        )
+        `)
+
+
+db.get("SELECT * FROM usuarios WHERE usuario='admin'", (err,row)=>{
+
+if(!row){
+
+db.run("INSERT INTO usuarios (usuario,senha) VALUES ('admin','123456')")
+
+}
+
+})
+
 res.redirect("/")
 
 })
@@ -167,4 +196,10 @@ res.redirect("/login")
 
 app.listen(3000,()=>{
 console.log("Portal rodando em http://localhost:3000")
+})
+
+const PORT = process.env.PORT || 3000
+
+app.listen(PORT, () => {
+console.log("Servidor rodando")
 })
