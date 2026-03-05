@@ -17,6 +17,8 @@ saveUninitialized:true
 
 const db = new sqlite3.Database("database.db")
 
+/* CRIAR TABELAS */
+
 db.serialize(()=>{
 
 db.run(`
@@ -45,6 +47,8 @@ db.run("INSERT INTO usuarios (usuario,senha) VALUES ('admin','123456')")
 
 })
 
+/* CONFIGURAR UPLOAD */
+
 const storage = multer.diskStorage({
 destination:(req,file,cb)=>{
 cb(null,"public/img")
@@ -56,6 +60,8 @@ cb(null,Date.now()+"-"+file.originalname)
 
 const upload = multer({storage:storage})
 
+/* HOME */
+
 app.get("/",(req,res)=>{
 
 db.all("SELECT * FROM noticias ORDER BY id DESC",(err,rows)=>{
@@ -65,6 +71,8 @@ res.render("index",{noticias:rows})
 })
 
 })
+
+/* VER NOTÍCIA */
 
 app.get("/noticia/:id",(req,res)=>{
 
@@ -85,6 +93,8 @@ res.render("noticia",{noticia:row})
 })
 
 })
+
+/* LOGIN */
 
 app.get("/login",(req,res)=>{
 res.render("login")
@@ -115,15 +125,23 @@ res.send("Login inválido")
 
 })
 
+/* PAINEL ADMIN */
+
 app.get("/admin",(req,res)=>{
 
 if(!req.session.usuario){
 return res.redirect("/login")
 }
 
-res.render("admin")
+db.all("SELECT * FROM noticias ORDER BY id DESC",(err,rows)=>{
+
+res.render("admin",{noticias:rows})
 
 })
+
+})
+
+/* PUBLICAR NOTICIA */
 
 app.post("/admin/publicar",upload.single("imagem"),(req,res)=>{
 
@@ -136,9 +154,58 @@ db.run(
 [titulo,conteudo,imagem]
 )
 
-res.redirect("/")
+res.redirect("/admin")
 
 })
+
+/* EXCLUIR NOTICIA */
+
+app.get("/admin/excluir/:id",(req,res)=>{
+
+let id = req.params.id
+
+db.run(
+"DELETE FROM noticias WHERE id=?",
+[id]
+)
+
+res.redirect("/admin")
+
+})
+
+/* EDITAR NOTICIA */
+
+app.get("/admin/editar/:id",(req,res)=>{
+
+let id = req.params.id
+
+db.get(
+"SELECT * FROM noticias WHERE id=?",
+[id],
+(err,row)=>{
+
+res.render("editar",{noticia:row})
+
+})
+
+})
+
+app.post("/admin/editar/:id",(req,res)=>{
+
+let id = req.params.id
+let titulo = req.body.titulo
+let conteudo = req.body.conteudo
+
+db.run(
+"UPDATE noticias SET titulo=?, conteudo=? WHERE id=?",
+[titulo,conteudo,id]
+)
+
+res.redirect("/admin")
+
+})
+
+/* LOGOUT */
 
 app.get("/logout",(req,res)=>{
 
@@ -146,6 +213,8 @@ req.session.destroy()
 res.redirect("/login")
 
 })
+
+/* SERVIDOR */
 
 const PORT = process.env.PORT || 3000
 
