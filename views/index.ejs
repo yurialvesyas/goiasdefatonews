@@ -17,13 +17,17 @@
 <div class="topo">
 
 <div class="logo">
-GOIÁS DE FATO NEWS
+
+<img src="/img/logo.png" class="logo-img">
+
 </div>
 
 <div class="busca">
 
 <form action="/buscar">
+
 <input type="text" placeholder="Buscar notícia...">
+
 </form>
 
 </div>
@@ -55,14 +59,24 @@ GOIÁS DE FATO NEWS
 
 <div class="card">
 
+<% if(n.imagem){ %>
+<img src="/img/<%= n.imagem %>">
+<% } %>
+
 <h3>
+
 <a href="/noticia/<%= n.id %>">
+
 <%= n.titulo %>
+
 </a>
+
 </h3>
 
 <p>
+
 <%= n.conteudo.substring(0,120) %>...
+
 </p>
 
 </div>
