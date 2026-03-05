@@ -29,15 +29,16 @@
     /* LOGO */
     
     .logo{
-    line-height:0;
-    }
-    
-    .logo-img{
-    width:600px;
-    max-width:95%;
-    display:block;
-    margin:auto;
-    }
+        line-height:0;
+        }
+        
+        .logo-img{
+        width:800px;
+        max-width:100%;
+        height:auto;
+        display:block;
+        margin:auto;
+        }
     
     /* BUSCA */
     
@@ -120,10 +121,12 @@
     /* RESPONSIVO */
     
     @media(max-width:900px){
-    
-    .logo-img{
-    width:260px;
-    }
+
+        .logo-img{
+        width:320px;
+        }
+        
+        }
     
     nav ul{
     flex-direction:column;
