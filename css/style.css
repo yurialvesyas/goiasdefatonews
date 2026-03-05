@@ -14,7 +14,7 @@
     header{
     background:#0b8a2a;
     color:white;
-    padding:15px;
+    padding:8px 0;
     text-align:center;
     }
     
@@ -31,7 +31,7 @@
     /* LOGO */
     
     .logo-img{
-    width:400px;
+    width:480px;
     max-width:90%;
     display:block;
     margin:auto;
