@@ -13,7 +13,8 @@
     
     header{
     background:#0b8a2a;
-    padding:15px 0;
+    color:white;
+    padding:20px 0;
     text-align:center;
     }
     
@@ -39,6 +40,7 @@
     
     .busca{
     margin-top:10px;
+    text-align:center;
     }
     
     .busca input{
@@ -124,6 +126,10 @@
     nav ul{
     flex-direction:column;
     gap:10px;
+    }
+    
+    .busca input{
+    width:200px;
     }
     
     }
