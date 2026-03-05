@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<title>Editar notícia</title>
+
+<link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+<body>
+
+<h1>Editar notícia</h1>
+
+<form action="/admin/editar/<%= noticia.id %>" method="POST">
+
+<input type="text" name="titulo" value="<%= noticia.titulo %>" required>
+
+<br><br>
+
+<textarea name="conteudo" rows="10" required><%= noticia.conteudo %></textarea>
+
+<br><br>
+
+<button type="submit">Salvar alterações</button>
+
+</form>
+
+<br>
+
+<a href="/admin">Voltar para o painel</a>
+
+</body>
+
+</html>
