@@ -17,7 +17,7 @@ saveUninitialized:true
 
 const db = new sqlite3.Database("database.db")
 
-/* TABELA DE NOTICIAS */
+db.serialize(()=>{
 
 db.run(`
 CREATE TABLE IF NOT EXISTS noticias (
@@ -29,8 +29,6 @@ visualizacoes INTEGER DEFAULT 0
 )
 `)
 
-/* TABELA DE USUARIOS */
-
 db.run(`
 CREATE TABLE IF NOT EXISTS usuarios (
 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,15 +37,13 @@ senha TEXT
 )
 `)
 
-/* CRIA ADMIN PADRAO */
-
 db.get("SELECT * FROM usuarios WHERE usuario='admin'",(err,row)=>{
 if(!row){
 db.run("INSERT INTO usuarios (usuario,senha) VALUES ('admin','123456')")
 }
 })
 
-/* CONFIGURAR UPLOAD */
+})
 
 const storage = multer.diskStorage({
 destination:(req,file,cb)=>{
@@ -60,8 +56,6 @@ cb(null,Date.now()+"-"+file.originalname)
 
 const upload = multer({storage:storage})
 
-/* HOME */
-
 app.get("/",(req,res)=>{
 
 db.all("SELECT * FROM noticias ORDER BY id DESC",(err,rows)=>{
@@ -71,8 +65,6 @@ res.render("index",{noticias:rows})
 })
 
 })
-
-/* PAGINA DA NOTICIA */
 
 app.get("/noticia/:id",(req,res)=>{
 
@@ -93,8 +85,6 @@ res.render("noticia",{noticia:row})
 })
 
 })
-
-/* LOGIN */
 
 app.get("/login",(req,res)=>{
 res.render("login")
@@ -125,8 +115,6 @@ res.send("Login inválido")
 
 })
 
-/* ADMIN */
-
 app.get("/admin",(req,res)=>{
 
 if(!req.session.usuario){
@@ -136,8 +124,6 @@ return res.redirect("/login")
 res.render("admin")
 
 })
-
-/* PUBLICAR NOTICIA */
 
 app.post("/admin/publicar",upload.single("imagem"),(req,res)=>{
 
@@ -150,40 +136,9 @@ db.run(
 [titulo,conteudo,imagem]
 )
 
-db.run(`
-    CREATE TABLE IF NOT EXISTS noticias (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    titulo TEXT,
-    conteudo TEXT,
-    imagem TEXT,
-    visualizacoes INTEGER DEFAULT 0
-    )
-    `)
-
-    db.run(`
-        CREATE TABLE IF NOT EXISTS usuarios (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        usuario TEXT,
-        senha TEXT
-        )
-        `)
-
-
-db.get("SELECT * FROM usuarios WHERE usuario='admin'", (err,row)=>{
-
-if(!row){
-
-db.run("INSERT INTO usuarios (usuario,senha) VALUES ('admin','123456')")
-
-}
-
-})
-
 res.redirect("/")
 
 })
-
-/* LOGOUT */
 
 app.get("/logout",(req,res)=>{
 
@@ -192,14 +147,8 @@ res.redirect("/login")
 
 })
 
-/* SERVIDOR */
-
-app.listen(3000,()=>{
-console.log("Portal rodando em http://localhost:3000")
-})
-
 const PORT = process.env.PORT || 3000
 
-app.listen(PORT, () => {
+app.listen(PORT,()=>{
 console.log("Servidor rodando")
 })
