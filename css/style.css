@@ -21,9 +21,15 @@
     align-items:center;
     }
     
-    .logo-img{
-    height:70px;
-    }
+    .logo{
+        text-align:center;
+        }
+        
+        .logo-img{
+        height:190px;
+        display:block;
+        margin:auto;
+        }
     
     .busca input{
     padding:8px;
