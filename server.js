@@ -1,7 +1,7 @@
 const express = require("express")
-const sqlite3 = require("sqlite3").verbose()
 const session = require("express-session")
 const multer = require("multer")
+const { Pool } = require("pg")
 
 const app = express()
 
@@ -15,15 +15,20 @@ resave:false,
 saveUninitialized:true
 }))
 
-const db = new sqlite3.Database("database.db")
+/* CONEXÃO POSTGRESQL */
+
+const pool = new Pool({
+connectionString: process.env.DATABASE_URL,
+ssl: { rejectUnauthorized:false }
+})
 
 /* CRIAR TABELAS */
 
-db.serialize(()=>{
+async function criarTabelas(){
 
-db.run(`
+await pool.query(`
 CREATE TABLE IF NOT EXISTS noticias (
-id INTEGER PRIMARY KEY AUTOINCREMENT,
+id SERIAL PRIMARY KEY,
 titulo TEXT,
 conteudo TEXT,
 imagem TEXT,
@@ -31,21 +36,31 @@ visualizacoes INTEGER DEFAULT 0
 )
 `)
 
-db.run(`
+await pool.query(`
 CREATE TABLE IF NOT EXISTS usuarios (
-id INTEGER PRIMARY KEY AUTOINCREMENT,
+id SERIAL PRIMARY KEY,
 usuario TEXT,
 senha TEXT
 )
 `)
 
-db.get("SELECT * FROM usuarios WHERE usuario='admin'",(err,row)=>{
-if(!row){
-db.run("INSERT INTO usuarios (usuario,senha) VALUES ('admin','123456')")
-}
-})
+const admin = await pool.query(
+"SELECT * FROM usuarios WHERE usuario=$1",
+["admin"]
+)
 
-})
+if(admin.rows.length === 0){
+
+await pool.query(
+"INSERT INTO usuarios (usuario,senha) VALUES ($1,$2)",
+["admin","123456"]
+)
+
+}
+
+}
+
+criarTabelas()
 
 /* CONFIGURAR UPLOAD */
 
@@ -62,35 +77,33 @@ const upload = multer({storage:storage})
 
 /* HOME */
 
-app.get("/",(req,res)=>{
+app.get("/", async (req,res)=>{
 
-db.all("SELECT * FROM noticias ORDER BY id DESC",(err,rows)=>{
+const result = await pool.query(
+"SELECT * FROM noticias ORDER BY id DESC"
+)
 
-res.render("index",{noticias:rows})
+res.render("index",{noticias:result.rows})
 
 })
 
-})
+/* VER NOTICIA */
 
-/* VER NOTÍCIA */
-
-app.get("/noticia/:id",(req,res)=>{
+app.get("/noticia/:id", async (req,res)=>{
 
 let id = req.params.id
 
-db.run(
-"UPDATE noticias SET visualizacoes = visualizacoes + 1 WHERE id=?",
+await pool.query(
+"UPDATE noticias SET visualizacoes = visualizacoes + 1 WHERE id=$1",
 [id]
 )
 
-db.get(
-"SELECT * FROM noticias WHERE id=?",
-[id],
-(err,row)=>{
+const result = await pool.query(
+"SELECT * FROM noticias WHERE id=$1",
+[id]
+)
 
-res.render("noticia",{noticia:row})
-
-})
+res.render("noticia",{noticia:result.rows[0]})
 
 })
 
@@ -100,17 +113,17 @@ app.get("/login",(req,res)=>{
 res.render("login")
 })
 
-app.post("/login",(req,res)=>{
+app.post("/login", async (req,res)=>{
 
 let usuario = req.body.usuario
 let senha = req.body.senha
 
-db.get(
-"SELECT * FROM usuarios WHERE usuario=? AND senha=?",
-[usuario,senha],
-(err,row)=>{
+const result = await pool.query(
+"SELECT * FROM usuarios WHERE usuario=$1 AND senha=$2",
+[usuario,senha]
+)
 
-if(row){
+if(result.rows.length > 0){
 
 req.session.usuario = usuario
 res.redirect("/admin")
@@ -123,34 +136,32 @@ res.send("Login inválido")
 
 })
 
-})
-
 /* PAINEL ADMIN */
 
-app.get("/admin",(req,res)=>{
+app.get("/admin", async (req,res)=>{
 
 if(!req.session.usuario){
 return res.redirect("/login")
 }
 
-db.all("SELECT * FROM noticias ORDER BY id DESC",(err,rows)=>{
+const result = await pool.query(
+"SELECT * FROM noticias ORDER BY id DESC"
+)
 
-res.render("admin",{noticias:rows})
-
-})
+res.render("admin",{noticias:result.rows})
 
 })
 
 /* PUBLICAR NOTICIA */
 
-app.post("/admin/publicar",upload.single("imagem"),(req,res)=>{
+app.post("/admin/publicar",upload.single("imagem"), async (req,res)=>{
 
 let titulo = req.body.titulo
 let conteudo = req.body.conteudo
 let imagem = req.file ? req.file.filename : null
 
-db.run(
-"INSERT INTO noticias (titulo,conteudo,imagem) VALUES (?,?,?)",
+await pool.query(
+"INSERT INTO noticias (titulo,conteudo,imagem) VALUES ($1,$2,$3)",
 [titulo,conteudo,imagem]
 )
 
@@ -160,12 +171,12 @@ res.redirect("/admin")
 
 /* EXCLUIR NOTICIA */
 
-app.get("/admin/excluir/:id",(req,res)=>{
+app.get("/admin/excluir/:id", async (req,res)=>{
 
 let id = req.params.id
 
-db.run(
-"DELETE FROM noticias WHERE id=?",
+await pool.query(
+"DELETE FROM noticias WHERE id=$1",
 [id]
 )
 
@@ -175,29 +186,27 @@ res.redirect("/admin")
 
 /* EDITAR NOTICIA */
 
-app.get("/admin/editar/:id",(req,res)=>{
+app.get("/admin/editar/:id", async (req,res)=>{
 
 let id = req.params.id
 
-db.get(
-"SELECT * FROM noticias WHERE id=?",
-[id],
-(err,row)=>{
+const result = await pool.query(
+"SELECT * FROM noticias WHERE id=$1",
+[id]
+)
 
-res.render("editar",{noticia:row})
-
-})
+res.render("editar",{noticia:result.rows[0]})
 
 })
 
-app.post("/admin/editar/:id",(req,res)=>{
+app.post("/admin/editar/:id", async (req,res)=>{
 
 let id = req.params.id
 let titulo = req.body.titulo
 let conteudo = req.body.conteudo
 
-db.run(
-"UPDATE noticias SET titulo=?, conteudo=? WHERE id=?",
+await pool.query(
+"UPDATE noticias SET titulo=$1, conteudo=$2 WHERE id=$3",
 [titulo,conteudo,id]
 )
 
