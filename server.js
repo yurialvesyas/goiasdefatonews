@@ -15,12 +15,20 @@ resave:false,
 saveUninitialized:true
 }))
 
-/* CONEXÃO POSTGRESQL */
+/* CONEXÃO POSTGRESQL (NEON) */
 
 const pool = new Pool({
 connectionString: process.env.DATABASE_URL,
-ssl: { rejectUnauthorized:false }
+ssl: {
+rejectUnauthorized:false
+}
 })
+
+/* TESTAR CONEXÃO */
+
+pool.query("SELECT NOW()")
+.then(res => console.log("✅ Conectado ao Neon:", res.rows[0]))
+.catch(err => console.log("❌ Erro conexão Neon:", err))
 
 /* CRIAR TABELAS */
 
@@ -45,6 +53,8 @@ usuario TEXT,
 senha TEXT
 )
 `)
+
+/* CRIAR ADMIN PADRÃO */
 
 const admin = await pool.query(
 "SELECT * FROM usuarios WHERE usuario=$1",
@@ -81,11 +91,11 @@ const upload = multer({storage:storage})
 
 app.get("/", async (req,res)=>{
 
-const result = await pool.query(
-"SELECT * FROM noticias ORDER BY id DESC"
+const noticias = await pool.query(
+"SELECT * FROM noticias ORDER BY data_publicacao DESC"
 )
 
-res.render("index",{noticias:result.rows})
+res.render("index",{noticias:noticias.rows})
 
 })
 
@@ -153,11 +163,11 @@ if(!req.session.usuario){
 return res.redirect("/login")
 }
 
-const result = await pool.query(
-"SELECT * FROM noticias ORDER BY id DESC"
+const noticias = await pool.query(
+"SELECT * FROM noticias ORDER BY data_publicacao DESC"
 )
 
-res.render("admin",{noticias:result.rows})
+res.render("admin",{noticias:noticias.rows})
 
 })
 
@@ -200,12 +210,12 @@ app.get("/admin/editar/:id", async (req,res)=>{
 
 let id = req.params.id
 
-const result = await pool.query(
+const noticia = await pool.query(
 "SELECT * FROM noticias WHERE id=$1",
 [id]
 )
 
-res.render("editar",{noticia:result.rows[0]})
+res.render("editar",{noticia:noticia.rows[0]})
 
 })
 
@@ -227,10 +237,8 @@ res.redirect("/admin")
 /* LOGOUT */
 
 app.get("/logout",(req,res)=>{
-
 req.session.destroy()
 res.redirect("/login")
-
 })
 
 /* SERVIDOR */
@@ -238,5 +246,5 @@ res.redirect("/login")
 const PORT = process.env.PORT || 3000
 
 app.listen(PORT,()=>{
-console.log("Servidor rodando")
+console.log("🚀 Servidor rodando")
 })
