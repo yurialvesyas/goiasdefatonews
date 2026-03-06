@@ -1,9 +1,84 @@
-<h1><%= noticia.titulo %></h1>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+<title><%= noticia.titulo %> | Goiás de Fato News</title>
+
 <link rel="stylesheet" href="/css/style.css">
+
+<style>
+
+.noticia-container{
+max-width:900px;
+margin:40px auto;
+background:white;
+padding:30px;
+border-radius:8px;
+box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+.noticia-titulo{
+font-size:36px;
+margin-bottom:20px;
+}
+
+.noticia-imagem{
+width:100%;
+margin:20px 0;
+border-radius:6px;
+}
+
+.noticia-conteudo{
+font-size:18px;
+line-height:1.6;
+margin-top:20px;
+}
+
+.noticia-visu{
+margin-top:30px;
+color:#777;
+}
+
+.voltar{
+margin-top:30px;
+display:inline-block;
+color:#002776;
+font-weight:bold;
+text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="noticia-container">
+
+<h1 class="noticia-titulo"><%= noticia.titulo %></h1>
+
 <% if(noticia.imagem){ %>
-<img src="/img/<%= noticia.imagem %>" width="400">
+
+<img src="/img/<%= noticia.imagem %>" class="noticia-imagem">
+
 <% } %>
+
+<div class="noticia-conteudo">
 
 <p><%= noticia.conteudo %></p>
 
-<p>Visualizações: <%= noticia.visualizacoes %></p>
+</div>
+
+<p class="noticia-visu">
+Visualizações: <%= noticia.visualizacoes %>
+</p>
+
+<a href="/" class="voltar">← Voltar para o portal</a>
+
+</div>
+
+</body>
+
+</html>
