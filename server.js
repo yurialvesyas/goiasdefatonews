@@ -32,6 +32,8 @@ id SERIAL PRIMARY KEY,
 titulo TEXT,
 conteudo TEXT,
 imagem TEXT,
+autor TEXT,
+data_publicacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 visualizacoes INTEGER DEFAULT 0
 )
 `)
@@ -98,12 +100,19 @@ await pool.query(
 [id]
 )
 
-const result = await pool.query(
+const noticia = await pool.query(
 "SELECT * FROM noticias WHERE id=$1",
 [id]
 )
 
-res.render("noticia",{noticia:result.rows[0]})
+const maisLidas = await pool.query(
+"SELECT * FROM noticias ORDER BY visualizacoes DESC LIMIT 5"
+)
+
+res.render("noticia",{
+noticia:noticia.rows[0],
+maisLidas:maisLidas.rows
+})
 
 })
 
@@ -158,11 +167,12 @@ app.post("/admin/publicar",upload.single("imagem"), async (req,res)=>{
 
 let titulo = req.body.titulo
 let conteudo = req.body.conteudo
+let autor = req.body.autor
 let imagem = req.file ? req.file.filename : null
 
 await pool.query(
-"INSERT INTO noticias (titulo,conteudo,imagem) VALUES ($1,$2,$3)",
-[titulo,conteudo,imagem]
+"INSERT INTO noticias (titulo,conteudo,imagem,autor) VALUES ($1,$2,$3,$4)",
+[titulo,conteudo,imagem,autor]
 )
 
 res.redirect("/admin")

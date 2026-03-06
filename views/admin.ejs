@@ -7,15 +7,69 @@
 <title>Painel Admin</title>
 
 <link rel="stylesheet" href="/css/style.css">
+
+<style>
+
+.admin-container{
+max-width:900px;
+margin:40px auto;
+font-family:Arial;
+}
+
+.admin-box{
+background:white;
+padding:25px;
+border-radius:8px;
+margin-bottom:30px;
+box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+.admin-box h2{
+margin-bottom:15px;
+}
+
+.admin-box input,
+.admin-box textarea{
+width:100%;
+padding:10px;
+margin-bottom:15px;
+border:1px solid #ccc;
+border-radius:4px;
+}
+
+.admin-box button{
+background:#0b8a2a;
+color:white;
+border:none;
+padding:10px 20px;
+cursor:pointer;
+border-radius:4px;
+}
+
+.lista-noticia{
+border-bottom:1px solid #ddd;
+padding:10px 0;
+}
+
+.lista-noticia a{
+margin-right:10px;
+text-decoration:none;
+color:#002776;
+}
+
+</style>
+
 </head>
 
 <body>
+
+<div class="admin-container">
 
 <h1>Painel Administrativo</h1>
 
 <a href="/logout">Sair</a>
 
-<hr>
+<div class="admin-box">
 
 <h2>Publicar notícia</h2>
 
@@ -23,41 +77,41 @@
 
 <input type="text" name="titulo" placeholder="Título da notícia" required>
 
-<br><br>
+<input type="text" name="autor" placeholder="Autor da notícia" required>
 
 <textarea name="conteudo" placeholder="Conteúdo da notícia" rows="6" required></textarea>
 
-<br><br>
-
 <input type="file" name="imagem">
 
-<br><br>
-
-<button type="submit">Publicar</button>
+<button type="submit">Publicar notícia</button>
 
 </form>
 
-<hr>
+</div>
+
+<div class="admin-box">
 
 <h2>Notícias publicadas</h2>
 
 <% noticias.forEach(function(n){ %>
 
-<div style="border:1px solid #ccc;padding:10px;margin:10px 0;">
+<div class="lista-noticia">
 
 <strong><%= n.titulo %></strong>
 
-<br><br>
+<br>
 
 <a href="/admin/editar/<%= n.id %>">✏️ Editar</a>
-
-|
 
 <a href="/admin/excluir/<%= n.id %>" onclick="return confirm('Deseja excluir esta notícia?')">🗑️ Excluir</a>
 
 </div>
 
 <% }) %>
+
+</div>
+
+</div>
 
 </body>
 
