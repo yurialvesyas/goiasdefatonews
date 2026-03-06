@@ -21,13 +21,9 @@
 </div>
 
 <div class="busca">
-
 <form action="/buscar">
-
 <input type="text" placeholder="Buscar notícia...">
-
 </form>
-
 </div>
 
 </div>
@@ -51,9 +47,35 @@
 
 <div class="container">
 
-<section class="grid-noticias">
+<!-- NOTICIA DESTAQUE -->
 
-<% noticias.forEach(function(n){ %>
+<% if(noticias.length > 0){ %>
+
+<div class="destaque">
+
+<% if(noticias[0].imagem){ %>
+<img src="/img/<%= noticias[0].imagem %>">
+<% } %>
+
+<h2>
+<a href="/noticia/<%= noticias[0].id %>">
+<%= noticias[0].titulo %>
+</a>
+</h2>
+
+<p>
+<%= noticias[0].conteudo.substring(0,200) %>...
+</p>
+
+</div>
+
+<% } %>
+
+<!-- 3 NOTICIAS PRINCIPAIS -->
+
+<div class="principais">
+
+<% noticias.slice(1,4).forEach(function(n){ %>
 
 <div class="card">
 
@@ -62,19 +84,37 @@
 <% } %>
 
 <h3>
-
 <a href="/noticia/<%= n.id %>">
-
 <%= n.titulo %>
-
 </a>
+</h3>
 
+</div>
+
+<% }) %>
+
+</div>
+
+<!-- OUTRAS NOTICIAS -->
+
+<section class="grid-noticias">
+
+<% noticias.slice(4).forEach(function(n){ %>
+
+<div class="card">
+
+<% if(n.imagem){ %>
+<img src="/img/<%= n.imagem %>">
+<% } %>
+
+<h3>
+<a href="/noticia/<%= n.id %>">
+<%= n.titulo %>
+</a>
 </h3>
 
 <p>
-
 <%= n.conteudo.substring(0,120) %>...
-
 </p>
 
 </div>

@@ -137,4 +137,34 @@
     width:200px;
     }
     
+   /* NOTICIA DESTAQUE */
+
+.destaque{
+    margin-bottom:40px;
+    }
     
+    .destaque img{
+    width:100%;
+    border-radius:6px;
+    margin-bottom:15px;
+    }
+    
+    .destaque h2{
+    font-size:32px;
+    margin-bottom:10px;
+    }
+    
+    /* PRINCIPAIS */
+    
+    .principais{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    margin-bottom:40px;
+    }
+    
+    .principais img{
+    width:100%;
+    border-radius:4px;
+    margin-bottom:10px;
+    } 
