@@ -29,16 +29,16 @@
     /* LOGO */
     
     .logo{
-        line-height:0;
-        }
-        
-        .logo-img{
-        width: 1500px;
-        max-width:100%;
-        height:auto;
-        display:block;
-        margin:auto;
-        }
+    line-height:0;
+    }
+    
+    .logo-img{
+    width:600px;
+    max-width:100%;
+    height:auto;
+    display:block;
+    margin:auto;
+    }
     
     /* BUSCA */
     
@@ -78,8 +78,75 @@
     
     .container{
     width:90%;
+    max-width:1200px;
     margin:auto;
     margin-top:30px;
+    }
+    
+    /* LAYOUT PORTAL */
+    
+    .layout{
+    display:grid;
+    grid-template-columns:3fr 1fr;
+    gap:30px;
+    }
+    
+    /* SIDEBAR */
+    
+    .sidebar{
+    background:white;
+    padding:20px;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    height:fit-content;
+    }
+    
+    .sidebar h3{
+    margin-bottom:15px;
+    }
+    
+    .sidebar a{
+    display:block;
+    margin-bottom:10px;
+    color:#002776;
+    text-decoration:none;
+    font-weight:bold;
+    }
+    
+    .sidebar a:hover{
+    text-decoration:underline;
+    }
+    
+    /* DESTAQUE PRINCIPAL */
+    
+    .destaque-principal{
+    margin-bottom:40px;
+    }
+    
+    .destaque-principal img{
+    width:100%;
+    border-radius:6px;
+    margin-bottom:15px;
+    }
+    
+    .destaque-principal h1{
+    font-size:34px;
+    margin-bottom:10px;
+    }
+    
+    /* PRINCIPAIS */
+    
+    .principais{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:15px;
+    margin-bottom:40px;
+    }
+    
+    .principais img{
+    width:100%;
+    border-radius:4px;
+    margin-bottom:10px;
     }
     
     /* GRID NOTICIAS */
@@ -102,6 +169,7 @@
     .card img{
     width:100%;
     margin-bottom:10px;
+    border-radius:4px;
     }
     
     .card h3{
@@ -121,12 +189,10 @@
     /* RESPONSIVO */
     
     @media(max-width:900px){
-
-        .logo-img{
-        width:320px;
-        }
-        
-        }
+    
+    .logo-img{
+    width:320px;
+    }
     
     nav ul{
     flex-direction:column;
@@ -137,34 +203,12 @@
     width:200px;
     }
     
-   /* NOTICIA DESTAQUE */
-
-.destaque{
-    margin-bottom:40px;
+    .layout{
+    grid-template-columns:1fr;
     }
-    
-    .destaque img{
-    width:100%;
-    border-radius:6px;
-    margin-bottom:15px;
-    }
-    
-    .destaque h2{
-    font-size:32px;
-    margin-bottom:10px;
-    }
-    
-    /* PRINCIPAIS */
     
     .principais{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:20px;
-    margin-bottom:40px;
+    grid-template-columns:1fr;
     }
     
-    .principais img{
-    width:100%;
-    border-radius:4px;
-    margin-bottom:10px;
-    } 
+    }
