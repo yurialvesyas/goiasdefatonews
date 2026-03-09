@@ -40,6 +40,33 @@ font-weight:bold;
 text-decoration:underline;
 }
 
+/* destaque principal */
+
+.destaque-principal img{
+width:100%;
+border-radius:6px;
+margin-bottom:15px;
+}
+
+.destaque-principal h1{
+font-size:34px;
+margin-bottom:10px;
+}
+
+/* principais */
+
+.principais{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:15px;
+margin-top:20px;
+}
+
+.principais img{
+width:100%;
+border-radius:4px;
+}
+
 </style>
 
 </head>
@@ -87,46 +114,48 @@ text-decoration:underline;
 
 <div class="layout">
 
+<!-- CONTEUDO PRINCIPAL -->
+
 <div>
 
 <!-- NOTICIA DESTAQUE -->
 
 <% if(noticias.length > 0){ %>
 
-<div class="destaque">
+<div class="destaque-principal">
 
 <% if(noticias[0].imagem){ %>
 <img src="/img/<%= noticias[0].imagem %>">
 <% } %>
 
 <p style="color:#0b8a2a;font-weight:bold">
-<%= noticias[0].categoria %>
+<%= noticias[0].categoria || "Geral" %>
 </p>
 
-<h2>
+<h1>
 <a href="/noticia/<%= noticias[0].id %>">
 <%= noticias[0].titulo %>
 </a>
-</h2>
+</h1>
 
 <p>
-<%= noticias[0].conteudo.substring(0,200) %>...
+<%= noticias[0].conteudo ? noticias[0].conteudo.substring(0,250) : "" %>...
 </p>
 
 </div>
 
 <% } %>
 
-<!-- 3 NOTICIAS PRINCIPAIS -->
+<!-- 5 NOTICIAS PRINCIPAIS -->
 
 <div class="principais">
 
-<% noticias.slice(1,4).forEach(function(n){ %>
+<% noticias.slice(1,6).forEach(function(n){ %>
 
 <div class="card">
 
 <p style="color:#0b8a2a;font-weight:bold">
-<%= n.categoria %>
+<%= n.categoria || "Geral" %>
 </p>
 
 <% if(n.imagem){ %>
@@ -145,16 +174,16 @@ text-decoration:underline;
 
 </div>
 
-<!-- OUTRAS NOTICIAS -->
+<!-- GRID DE NOTICIAS -->
 
 <section class="grid-noticias">
 
-<% noticias.slice(4).forEach(function(n){ %>
+<% noticias.slice(6).forEach(function(n){ %>
 
 <div class="card">
 
 <p style="color:#0b8a2a;font-weight:bold">
-<%= n.categoria %>
+<%= n.categoria || "Geral" %>
 </p>
 
 <% if(n.imagem){ %>
@@ -168,7 +197,7 @@ text-decoration:underline;
 </h3>
 
 <p>
-<%= n.conteudo.substring(0,120) %>...
+<%= n.conteudo ? n.conteudo.substring(0,120) : "" %>...
 </p>
 
 </div>
@@ -179,7 +208,7 @@ text-decoration:underline;
 
 </div>
 
-<!-- SIDEBAR MAIS LIDAS -->
+<!-- SIDEBAR -->
 
 <div class="sidebar">
 
