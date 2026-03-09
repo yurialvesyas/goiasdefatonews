@@ -11,9 +11,16 @@
 <style>
 
 .admin-container{
-max-width:900px;
+max-width:1000px;
 margin:40px auto;
 font-family:Arial;
+}
+
+.admin-topo{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:30px;
 }
 
 .admin-box{
@@ -42,25 +49,43 @@ border-radius:4px;
 background:#0b8a2a;
 color:white;
 border:none;
-padding:10px 20px;
+padding:12px 20px;
 cursor:pointer;
 border-radius:4px;
+font-weight:bold;
+}
+
+.admin-box button:hover{
+background:#097022;
 }
 
 .lista-noticia{
 border-bottom:1px solid #ddd;
-padding:10px 0;
+padding:15px 0;
+}
+
+.lista-noticia strong{
+font-size:18px;
 }
 
 .lista-noticia a{
 margin-right:10px;
 text-decoration:none;
 color:#002776;
+font-weight:bold;
+}
+
+.lista-noticia a:hover{
+text-decoration:underline;
 }
 
 .categoria{
 font-size:12px;
 color:#777;
+}
+
+.admin-acoes{
+margin-top:10px;
 }
 
 </style>
@@ -71,9 +96,15 @@ color:#777;
 
 <div class="admin-container">
 
+<div class="admin-topo">
+
 <h1>Painel Administrativo</h1>
 
 <a href="/logout">Sair</a>
+
+</div>
+
+<!-- PUBLICAR -->
 
 <div class="admin-box">
 
@@ -98,6 +129,8 @@ color:#777;
 
 <textarea name="conteudo" placeholder="Conteúdo da notícia" rows="6" required></textarea>
 
+<label>Imagem da notícia</label>
+
 <input type="file" name="imagem">
 
 <button type="submit">Publicar notícia</button>
@@ -106,9 +139,17 @@ color:#777;
 
 </div>
 
+<!-- LISTA -->
+
 <div class="admin-box">
 
 <h2>Notícias publicadas</h2>
+
+<% if(noticias.length === 0){ %>
+
+<p>Nenhuma notícia publicada.</p>
+
+<% } %>
 
 <% noticias.forEach(function(n){ %>
 
@@ -119,14 +160,18 @@ color:#777;
 <br>
 
 <span class="categoria">
+
 <%= n.categoria || "Sem categoria" %>
+
 </span>
 
-<br><br>
+<div class="admin-acoes">
 
 <a href="/admin/editar/<%= n.id %>">✏️ Editar</a>
 
 <a href="/admin/excluir/<%= n.id %>" onclick="return confirm('Deseja excluir esta notícia?')">🗑️ Excluir</a>
+
+</div>
 
 </div>
 
