@@ -35,11 +35,11 @@
 <ul>
 
 <li><a href="/">Início</a></li>
-<li><a href="#">Política</a></li>
-<li><a href="#">Goiás</a></li>
-<li><a href="#">Brasil</a></li>
-<li><a href="#">Economia</a></li>
-<li><a href="#">Opinião</a></li>
+<li><a href="/categoria/Politica">Política</a></li>
+<li><a href="/categoria/Goias">Goiás</a></li>
+<li><a href="/categoria/Brasil">Brasil</a></li>
+<li><a href="/categoria/Economia">Economia</a></li>
+<li><a href="/categoria/Opiniao">Opinião</a></li>
 
 </ul>
 
@@ -56,6 +56,10 @@
 <% if(noticias[0].imagem){ %>
 <img src="/img/<%= noticias[0].imagem %>">
 <% } %>
+
+<p style="color:#0b8a2a;font-weight:bold">
+<%= noticias[0].categoria %>
+</p>
 
 <h2>
 <a href="/noticia/<%= noticias[0].id %>">
@@ -78,6 +82,10 @@
 <% noticias.slice(1,4).forEach(function(n){ %>
 
 <div class="card">
+
+<p style="color:#0b8a2a;font-weight:bold">
+<%= n.categoria %>
+</p>
 
 <% if(n.imagem){ %>
 <img src="/img/<%= n.imagem %>">
@@ -102,6 +110,10 @@
 <% noticias.slice(4).forEach(function(n){ %>
 
 <div class="card">
+
+<p style="color:#0b8a2a;font-weight:bold">
+<%= n.categoria %>
+</p>
 
 <% if(n.imagem){ %>
 <img src="/img/<%= n.imagem %>">
