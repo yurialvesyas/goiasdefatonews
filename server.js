@@ -92,7 +92,14 @@ const noticias = await pool.query(
 "SELECT * FROM noticias ORDER BY data_publicacao DESC"
 )
 
-res.render("index",{noticias:noticias.rows})
+const maisLidas = await pool.query(
+"SELECT * FROM noticias ORDER BY visualizacoes DESC LIMIT 5"
+)
+
+res.render("index",{
+noticias:noticias.rows,
+maisLidas:maisLidas.rows
+})
 
 })
 
@@ -107,7 +114,36 @@ const noticias = await pool.query(
 [categoria]
 )
 
-res.render("index",{noticias:noticias.rows})
+const maisLidas = await pool.query(
+"SELECT * FROM noticias ORDER BY visualizacoes DESC LIMIT 5"
+)
+
+res.render("index",{
+noticias:noticias.rows,
+maisLidas:maisLidas.rows
+})
+
+})
+
+/* BUSCA */
+
+app.get("/buscar", async (req,res)=>{
+
+let termo = req.query.q
+
+const noticias = await pool.query(
+"SELECT * FROM noticias WHERE titulo ILIKE $1 ORDER BY data_publicacao DESC",
+[`%${termo}%`]
+)
+
+const maisLidas = await pool.query(
+"SELECT * FROM noticias ORDER BY visualizacoes DESC LIMIT 5"
+)
+
+res.render("index",{
+noticias:noticias.rows,
+maisLidas:maisLidas.rows
+})
 
 })
 
