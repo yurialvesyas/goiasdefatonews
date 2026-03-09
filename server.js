@@ -15,20 +15,18 @@ resave:false,
 saveUninitialized:true
 }))
 
-/* CONEXÃO POSTGRESQL (NEON) */
+/* CONEXÃO POSTGRESQL */
 
 const pool = new Pool({
 connectionString: process.env.DATABASE_URL,
-ssl: {
-rejectUnauthorized:false
-}
+ssl:{ rejectUnauthorized:false }
 })
 
 /* TESTAR CONEXÃO */
 
 pool.query("SELECT NOW()")
-.then(res => console.log("✅ Conectado ao Neon:", res.rows[0]))
-.catch(err => console.log("❌ Erro conexão Neon:", err))
+.then(res => console.log("Conectado ao Neon"))
+.catch(err => console.log("Erro conexão:",err))
 
 /* CRIAR TABELAS */
 
@@ -40,6 +38,7 @@ id SERIAL PRIMARY KEY,
 titulo TEXT,
 conteudo TEXT,
 imagem TEXT,
+categoria TEXT,
 autor TEXT,
 data_publicacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 visualizacoes INTEGER DEFAULT 0
@@ -53,8 +52,6 @@ usuario TEXT,
 senha TEXT
 )
 `)
-
-/* CRIAR ADMIN PADRÃO */
 
 const admin = await pool.query(
 "SELECT * FROM usuarios WHERE usuario=$1",
@@ -93,6 +90,21 @@ app.get("/", async (req,res)=>{
 
 const noticias = await pool.query(
 "SELECT * FROM noticias ORDER BY data_publicacao DESC"
+)
+
+res.render("index",{noticias:noticias.rows})
+
+})
+
+/* CATEGORIAS */
+
+app.get("/categoria/:categoria", async (req,res)=>{
+
+let categoria = req.params.categoria
+
+const noticias = await pool.query(
+"SELECT * FROM noticias WHERE categoria=$1 ORDER BY data_publicacao DESC",
+[categoria]
 )
 
 res.render("index",{noticias:noticias.rows})
@@ -177,12 +189,13 @@ app.post("/admin/publicar",upload.single("imagem"), async (req,res)=>{
 
 let titulo = req.body.titulo
 let conteudo = req.body.conteudo
+let categoria = req.body.categoria
 let autor = req.body.autor
 let imagem = req.file ? req.file.filename : null
 
 await pool.query(
-"INSERT INTO noticias (titulo,conteudo,imagem,autor) VALUES ($1,$2,$3,$4)",
-[titulo,conteudo,imagem,autor]
+"INSERT INTO noticias (titulo,conteudo,imagem,categoria,autor) VALUES ($1,$2,$3,$4,$5)",
+[titulo,conteudo,imagem,categoria,autor]
 )
 
 res.redirect("/admin")
@@ -246,5 +259,5 @@ res.redirect("/login")
 const PORT = process.env.PORT || 3000
 
 app.listen(PORT,()=>{
-console.log("🚀 Servidor rodando")
+console.log("Servidor rodando")
 })
