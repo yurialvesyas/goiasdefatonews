@@ -25,8 +25,8 @@ ssl:{ rejectUnauthorized:false }
 /* TESTAR CONEXÃO */
 
 pool.query("SELECT NOW()")
-.then(res => console.log("Conectado ao Neon"))
-.catch(err => console.log("Erro conexão:",err))
+.then(res => console.log("✅ Conectado ao Neon"))
+.catch(err => console.log("❌ Erro conexão:",err))
 
 /* CRIAR TABELAS */
 
@@ -71,7 +71,7 @@ await pool.query(
 
 criarTabelas()
 
-/* CONFIGURAR UPLOAD */
+/* UPLOAD */
 
 const storage = multer.diskStorage({
 destination:(req,file,cb)=>{
@@ -88,6 +88,8 @@ const upload = multer({storage:storage})
 
 app.get("/", async (req,res)=>{
 
+try{
+
 const noticias = await pool.query(
 "SELECT * FROM noticias ORDER BY data_publicacao DESC"
 )
@@ -101,11 +103,20 @@ noticias:noticias.rows,
 maisLidas:maisLidas.rows
 })
 
+}catch(err){
+
+console.log(err)
+res.send("Erro no servidor")
+
+}
+
 })
 
 /* CATEGORIAS */
 
 app.get("/categoria/:categoria", async (req,res)=>{
+
+try{
 
 let categoria = req.params.categoria
 
@@ -123,13 +134,22 @@ noticias:noticias.rows,
 maisLidas:maisLidas.rows
 })
 
+}catch(err){
+
+console.log(err)
+res.send("Erro no servidor")
+
+}
+
 })
 
 /* BUSCA */
 
 app.get("/buscar", async (req,res)=>{
 
-let termo = req.query.q
+try{
+
+let termo = req.query.q || ""
 
 const noticias = await pool.query(
 "SELECT * FROM noticias WHERE titulo ILIKE $1 ORDER BY data_publicacao DESC",
@@ -145,11 +165,20 @@ noticias:noticias.rows,
 maisLidas:maisLidas.rows
 })
 
+}catch(err){
+
+console.log(err)
+res.send("Erro na busca")
+
+}
+
 })
 
 /* VER NOTICIA */
 
 app.get("/noticia/:id", async (req,res)=>{
+
+try{
 
 let id = req.params.id
 
@@ -172,6 +201,13 @@ noticia:noticia.rows[0],
 maisLidas:maisLidas.rows
 })
 
+}catch(err){
+
+console.log(err)
+res.send("Erro ao abrir notícia")
+
+}
+
 })
 
 /* LOGIN */
@@ -181,6 +217,8 @@ res.render("login")
 })
 
 app.post("/login", async (req,res)=>{
+
+try{
 
 let usuario = req.body.usuario
 let senha = req.body.senha
@@ -201,9 +239,16 @@ res.send("Login inválido")
 
 }
 
+}catch(err){
+
+console.log(err)
+res.send("Erro no login")
+
+}
+
 })
 
-/* PAINEL ADMIN */
+/* ADMIN */
 
 app.get("/admin", async (req,res)=>{
 
@@ -211,17 +256,28 @@ if(!req.session.usuario){
 return res.redirect("/login")
 }
 
+try{
+
 const noticias = await pool.query(
 "SELECT * FROM noticias ORDER BY data_publicacao DESC"
 )
 
 res.render("admin",{noticias:noticias.rows})
 
+}catch(err){
+
+console.log(err)
+res.send("Erro no admin")
+
+}
+
 })
 
-/* PUBLICAR NOTICIA */
+/* PUBLICAR */
 
 app.post("/admin/publicar",upload.single("imagem"), async (req,res)=>{
+
+try{
 
 let titulo = req.body.titulo
 let conteudo = req.body.conteudo
@@ -236,11 +292,20 @@ await pool.query(
 
 res.redirect("/admin")
 
+}catch(err){
+
+console.log(err)
+res.send("Erro ao publicar notícia")
+
+}
+
 })
 
-/* EXCLUIR NOTICIA */
+/* EXCLUIR */
 
 app.get("/admin/excluir/:id", async (req,res)=>{
+
+try{
 
 let id = req.params.id
 
@@ -251,11 +316,20 @@ await pool.query(
 
 res.redirect("/admin")
 
+}catch(err){
+
+console.log(err)
+res.send("Erro ao excluir")
+
+}
+
 })
 
-/* EDITAR NOTICIA */
+/* EDITAR */
 
 app.get("/admin/editar/:id", async (req,res)=>{
+
+try{
 
 let id = req.params.id
 
@@ -266,9 +340,18 @@ const noticia = await pool.query(
 
 res.render("editar",{noticia:noticia.rows[0]})
 
+}catch(err){
+
+console.log(err)
+res.send("Erro ao editar")
+
+}
+
 })
 
 app.post("/admin/editar/:id", async (req,res)=>{
+
+try{
 
 let id = req.params.id
 let titulo = req.body.titulo
@@ -280,6 +363,13 @@ await pool.query(
 )
 
 res.redirect("/admin")
+
+}catch(err){
+
+console.log(err)
+res.send("Erro ao atualizar")
+
+}
 
 })
 
@@ -295,5 +385,5 @@ res.redirect("/login")
 const PORT = process.env.PORT || 3000
 
 app.listen(PORT,()=>{
-console.log("Servidor rodando")
+console.log("🚀 Servidor rodando")
 })
